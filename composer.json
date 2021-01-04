@@ -1,0 +1,15 @@
+{
+    "name": "lavorareperilmale/s5ap",
+    "description": "Sistema Sincrono Spesa Singola Soggetto Altri Professionisti",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lavorareperilmale"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"lavorareperilmale\\s5ap\\": "src/"}
+    },
+    "require": {}
+}
