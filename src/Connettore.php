@@ -107,7 +107,10 @@ class Connettore
                           $cfcittadino, 
                           $importo, 
                           $pagamentoTracciato="SI", 
-                          $flagOpposizione=0
+                          $flagOpposizione=0,
+                          $tipoSpesa="SP",
+                          $naturaIVA="N2.1", // non soggetta iva 633/72
+                          $tipoDocumento = "F"
                           ) {
 
         // TODO: validate CF
@@ -124,12 +127,12 @@ class Connettore
             "dataPagamento" => $datapagamento,
             "cfCittadino" => $this->encryptString($cfcittadino),
             "voceSpesa" => Array (
-                "tipoSpesa" => "SP", 
+                "tipoSpesa" => $tipoSpesa, 
                 "importo" => $importo,
-                "naturaIVA" => "N2.1" // non soggetta iva 633/72
+                "naturaIVA" => $naturaIVA // non soggetta iva 633/72
             ),
             "pagamentoTracciato" => $pagamentoTracciato,
-            "tipoDocumento" => "F",
+            "tipoDocumento" => $tipoDocumento,
             "flagOpposizione" => $flagOpposizione
             );
 
