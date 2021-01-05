@@ -4,6 +4,8 @@ namespace lavorareperilmale\s5ap;
 
 require_once(dirname(__FILE__) . "/config/config.php");
 
+use lavorareperilmale\s5ap\SoapFixer;
+
 class Connettore
 {
 
@@ -87,7 +89,7 @@ class Connettore
                 "exceptions"        => false,
                 "stream_context" => $context
             );
-        $this->soapClient = new \SoapClient(dirname(__FILE__) . "/wsdl/DocumentoSpesa730p.wsdl", 
+        $this->soapClient = new SoapFixer(dirname(__FILE__) . "/wsdl/DocumentoSpesa730p.wsdl", 
                                    $soapClientParam);
     }
 
