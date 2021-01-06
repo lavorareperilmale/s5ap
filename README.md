@@ -34,6 +34,12 @@ foreach ($fatture as $fattura ) {
                             $fattura->cliente->codice_fiscale,
                             number_format($fattura->valore,2)
     );
+    if ( is_soap_fault($response) ) {
+        // Qualcosa e' andato storto. Si puo' stampare messaggio con:
+        echo $response->getMessage(); // Vedi https://www.php.net/manual/en/class.soapfault.php
+        die("Qualcosa e' andato storto");
+    }
+
     if ( $response->esitoChiamata == 0 || $response->esitoChiamata == 2 ) {
         // Invio andato a buon fine, magari con warnings
         echo $response->protocollo;
@@ -55,4 +61,5 @@ $tipoDocumento = "F"
 
 * Aggiungere test
 * Refactor passaggio opzioni
+* Verificare che non ci siano problemi con campi con leading zeros (magari pin?), come nel caso di partita Iva che ora usa SoapFixer.
 * Varie ed eventuali.

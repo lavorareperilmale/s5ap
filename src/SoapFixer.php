@@ -1,5 +1,10 @@
 <?php 
    
+/* 
+ Subclass di SoapClient per sistemare la partita IVA prima di inviare, nel caso abbia
+ leading zeros. 
+*/
+
 namespace lavorareperilmale\s5ap;
       
 require_once(dirname(__FILE__) . "/config/config.php");

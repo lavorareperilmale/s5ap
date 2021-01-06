@@ -10,7 +10,6 @@ class Connettore
 {
 
     // Se settati tramite costruttore, siamo in prod
-    // Dati da https://sistemats1.sanita.finanze.it/portale/
     private $username; 
     private $password;
     private $pincode;
@@ -53,12 +52,10 @@ class Connettore
         $this->pivaProprietario = $pivaProprietario;
 
         $this->endpoint = ENDPOINT_PROD;
-        $this->setupSOapClient(false); //FIXME
+        $this->setupSoapClient(true);
     }
 
-
-    // Se non ci sono argomenti, siamo in test
-    private function setupSOapClient($prod = false) {
+    private function setupSoapClient($prod = false) {
         $context = "";
         if (! $prod ) { 
             // In ambiente test niente check di SSL cert.
@@ -81,7 +78,7 @@ class Connettore
 
         $soapClientParam = array
             (
-                "location"          => ENDPOINT_TEST,
+                "location"          => $this->endpoint,
                 "login"             => $this->username,
                 "password"          => $this->password,
                 "authentication"    => SOAP_AUTHENTICATION_BASIC,
@@ -89,6 +86,8 @@ class Connettore
                 "exceptions"        => false,
                 "stream_context" => $context
             );
+        // Serve un fixer perche' quel maledetto di SoapClient toglie leading zeros da
+        // partite IVA del tipo 01234567891.
         $this->soapClient = new SoapFixer(dirname(__FILE__) . "/wsdl/DocumentoSpesa730p.wsdl", 
                                    $soapClientParam);
     }
@@ -115,8 +114,6 @@ class Connettore
                           $tipoDocumento = "F"
                           ) {
 
-        // TODO: validate CF
-        //       format importo
         $documentoSpesa = Array (
             "idSpesa" => Array (
                 "pIva" => $this->pivaProprietario,
@@ -131,7 +128,7 @@ class Connettore
             "voceSpesa" => Array (
                 "tipoSpesa" => $tipoSpesa, 
                 "importo" => $importo,
-                "naturaIVA" => $naturaIVA // non soggetta iva 633/72
+                "naturaIVA" => $naturaIVA
             ),
             "pagamentoTracciato" => $pagamentoTracciato,
             "tipoDocumento" => $tipoDocumento,
@@ -139,13 +136,9 @@ class Connettore
             );
 
         $output = $this->soapClient->Inserimento( Array ( 
-            //"pincode" => "W+cy4Lz7rOOgldsbK98TEAwR6OIikKMkQJ1nWS09LgnJ6up+4e2LfIHe9z6aOQ9NocHOqepHuUcqmNNXpOq2JDCZQms65cX2oif8VhSUsvOk/9mc/8A9A7tpLnHcoGNrrjrg0z3fat7JmENXo5LF5uQV2IqvT4z5BDJbNa5XZpQ=",
-            // "pincode" => "UVlBSIhTWnbQIJgJPReJHudcqwulW6D765f1QNcTc1HVvx4TD7qoDabol66sqSe7pysTxU3Ao6E4I7a3v70EQZgOLpFN2rJNnpRp7W5RZ2wHeKlifhooB8JBVY1CLypBKpyZILDBiDTeGl+KCToplJP3pjcWgOGQR0BroCisJXY=",
             "pincode" => $this->encryptString($this->pincode),
             "Proprietario" => Array (
                 "cfProprietario" => $this->encryptString($this->cfProprietario)
-                // "SsFrZY1plknIYKxk2MxIsgCyH2X3cfnrbg7B1aywMzw4SYwfzCa797Bb40vZMlS1pRjBki3SYZT/dao7W7SCwarTTLQqFmfXu7SGBStGzfAyVWcXAZapnW3d8QWfY7EgbktdHPfcoslCqY+K4JJrHQA9H2bk2ngSA7n+xOjuLVw="
-                //"cfProprietario" => "Ah1LnixnVEUqomYgH+MEOuhnowj/+iaS+wFLYP35BoeNbq8+68lkjTvo0h49p/iO1XjPVs8edoqNY1OXdcw1eNaaR4x4OsiM9zWvXQVYh2ocFBcpHAJlvoe7a0BPSF7Q94fUh/HkPzx+yi6t57DIatctICh4UIE3a+qW7e+1hzU="
             ),
             "idInserimentoDocumentoFiscale" => $documentoSpesa
           ) 
