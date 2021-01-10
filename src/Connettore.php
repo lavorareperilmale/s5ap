@@ -114,6 +114,7 @@ class Connettore
                           $tipoDocumento = "F"
                           ) {
 
+
         $documentoSpesa = Array (
             "idSpesa" => Array (
                 "pIva" => $this->pivaProprietario,
@@ -124,7 +125,6 @@ class Connettore
                 )
             ),
             "dataPagamento" => $datapagamento,
-            "cfCittadino" => $this->encryptString($cfcittadino),
             "voceSpesa" => Array (
                 "tipoSpesa" => $tipoSpesa, 
                 "importo" => $importo,
@@ -134,6 +134,11 @@ class Connettore
             "tipoDocumento" => $tipoDocumento,
             "flagOpposizione" => $flagOpposizione
             );
+
+        if ($flagOpposizione == 0 ) {
+            $documentoSpesa += ["cfCittadino" => $this->encryptString($cfcittadino)];
+        }
+    
 
         $output = $this->soapClient->Inserimento( Array ( 
             "pincode" => $this->encryptString($this->pincode),
