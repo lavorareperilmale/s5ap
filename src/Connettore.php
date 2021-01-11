@@ -110,7 +110,7 @@ class Connettore
                           $pagamentoTracciato="SI", 
                           $flagOpposizione=0,
                           $tipoSpesa="SP",
-                          $naturaIVA="N2.1", // non soggetta iva 633/72
+                          $naturaIVA="N4",  // Non soggetto
                           $tipoDocumento = "F"
                           ) {
 
